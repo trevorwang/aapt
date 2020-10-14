@@ -10,11 +10,13 @@ Last Modified: 2020-10-14 02:03:42 pm
 Modified By: Trevor Wang
 -----
 '''
-from setuptools import setup
+from setuptools import setup, find_packages
 import os
+import pathlib
 
-with open("README.md", "r") as fh:
-    long_description = fh.read()
+here = pathlib.Path(__file__).parent.resolve()
+
+long_description = (here / 'README.md').read_text(encoding='utf-8')
 
 setup(
     name="aapt2",
@@ -26,14 +28,17 @@ setup(
     url="https://github.com/trevorwang/aapt",
     author="Trevor Wang",
     author_email="trevor.wang@qq.com",
-    packages=['aapt2'],
+    package_dir={'': 'src'},
+    packages=find_packages(where='src'),
+    package_data={
+        'aapt2': ["bin/**/*"],
+    },
     include_package_data=True,
-    platforms="any",
-    install_requires=[],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>3.3',
+    python_requires='>=3.5, <4',
+    zip_safe=False
 )
