@@ -98,7 +98,7 @@ def get_apk_info(file_path):
             'version_name': version_name,
             'app_name': app_name,
             'icon_path': icon_path,
-            'permission': permissions,
+            'permissions': permissions,
             'launchable_activity': launchable_activity
         }
     except Exception as e:
