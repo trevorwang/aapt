@@ -11,13 +11,14 @@ Modified By: Trevor Wang
 -----
 '''
 from setuptools import setup, find_packages
+import os
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(
     name="aapt2",
-    version="0.0.2",
+    version=os.environ.get('RELEASE_VERSION') or "0.0.2",
     keywords=("aapt2", "apktool"),
     description="Android Asset Packaging Tool for Python3",
     long_description=long_description,
