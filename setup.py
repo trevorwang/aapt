@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 '''
-File: /setup.py
+File: setup.py
 Project: aapt2
 Description:
 Created By: Tao.Hu 2019-07-08
@@ -10,7 +10,7 @@ Last Modified: 2020-10-14 02:03:42 pm
 Modified By: Trevor Wang
 -----
 '''
-from setuptools import setup, find_packages
+from setuptools import setup
 import os
 
 with open("README.md", "r") as fh:
@@ -26,7 +26,7 @@ setup(
     url="https://github.com/trevorwang/aapt",
     author="Trevor Wang",
     author_email="trevor.wang@qq.com",
-    packages=find_packages(),
+    packages=['aapt2'],
     include_package_data=True,
     platforms="any",
     install_requires=[],
