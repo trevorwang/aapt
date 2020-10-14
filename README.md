@@ -1,15 +1,15 @@
 # Aapt
 
-Android Asset Packaging Tool for Python3
+Android Asset Packaging Tool 2 for Python3
 
 ## Install
 
-`pip3 install aapt`
+`pip3 install aapt2`
 
 ## Example
 
 ```python
-import aapt
+from aapt2 import aapt
 
 help = aapt.aapt('--help')
 print(help)
