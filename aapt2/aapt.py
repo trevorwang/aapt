@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 '''
-File: /aapt.py
+File: aapt2/aapt.py
 Project: aapt
 Description:
 Created By: Tao.Hu 2019-07-08
