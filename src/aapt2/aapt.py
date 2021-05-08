@@ -18,6 +18,8 @@ import stat
 import subprocess
 import platform
 import io
+import zipfile
+import pathlib
 
 
 def aapt(args='--help'):
@@ -86,7 +88,9 @@ def get_apk_info(file_path):
         version_code = match.group(2)
         version_name = match.group(3)
         match = re.compile(
-            "application: label='([\u4e00-\u9fa5_a-zA-Z0-9-\\S]+)'").search(stdout)
+            "application: label='([\u4e00-\u9fa5_a-zA-Z0-9-\\S\s]+)'").search(stdout)
+        if not match:
+            raise Exception("can't get application label")
         app_name = match.group(1)
         icon_path = get_icon_path(stdout)
         permissions = get_permissions(stdout)
@@ -107,7 +111,7 @@ def get_apk_info(file_path):
 
 def get_icon_path(stdout):
     match = re.compile(
-        "application: label='([\u4e00-\u9fa5_a-zA-Z0-9-\\S]+)' icon='(\\S+)'").search(stdout)
+        "application: label='([\u4e00-\u9fa5_a-zA-Z0-9-\\S\s]+)' icon='(\\S+)'").search(stdout)
     icon_path = (match and match.group(2)) or None
     return icon_path
 
@@ -132,13 +136,29 @@ def get_apk_and_icon(file_path):
     try:
         apkInfo = get_apk_info(file_path)
         if (apkInfo['icon_path']):
-            out = subprocess.check_output(
-                'unzip' + ' -p ' + file_path + ' ' + apkInfo['icon_path'], shell=True)
-            byte_stream = io.BytesIO(out)
-            apkInfo['icon_byte_value'] = byte_stream.getvalue()
-            byte_stream.close()
+            apkInfo['icon_suffix'] = apkInfo['icon_path'].split(".")[-1]
+            apkInfo['icon_byte_value'] = extract_file_from_apk(file_path,
+                                                               apkInfo['icon_path'])['byte_value']
         else:
+            apkInfo['icon_suffix'] = None
             apkInfo['icon_byte_value'] = None
         return apkInfo
+    except Exception as e:
+        raise e
+
+def extract_file_from_apk(file_path, file_of_interest, destination=None):
+    try:
+        extract_file = {'name': os.path.basename(file_of_interest),
+                        'byte_value': None}
+        with zipfile.ZipFile(file_path, 'r') as zipObj:
+            extract_file['byte_value'] = zipObj.read(file_of_interest, pwd=None)
+            if destination:
+                pathlib.Path(destination).parent.mkdir(parents=True, exist_ok=True)
+                zip_info = zipObj.getinfo(file_of_interest)
+                zip_info.filename = extract_file['name']
+                zipObj.extract(zip_info,
+                               os.path.join(destination),
+                               pwd=None)
+            return extract_file
     except Exception as e:
         raise e
